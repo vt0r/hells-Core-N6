@@ -9,13 +9,13 @@ restore='\033[0m'
 clear
 
 # Resources
-THREAD="-j9"
+THREAD="-j4"
 KERNEL="zImage-dtb"
 DEFCONFIG="hells_defconfig"
 
 # Kernel Details
 BASE_HC_VER="hC"
-VER="-b6-t5"
+VER="-b6-t5-F2FS"
 HC_VER="$BASE_HC_VER$VER"
 
 # Vars
