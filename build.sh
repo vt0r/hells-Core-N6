@@ -25,9 +25,9 @@ export SUBARCH=arm
 
 # Paths
 KERNEL_DIR=`pwd`
-REPACK_DIR="${HOME}/Android/Kernel/hC-N6-anykernel"
-ZIP_MOVE="${HOME}/Android/Kernel/hC-releases/N6"
-ZIMAGE_DIR="${HOME}/Android/Kernel/hells-Core-N6/arch/arm/boot"
+REPACK_DIR="${HOME}/KERNEL/hC-N6-anykernel"
+ZIP_MOVE="${HOME}/KERNEL/hC-releases/N6"
+ZIMAGE_DIR="${HOME}/KERNEL/hells-Core-N6/arch/arm/boot"
 DB_FOLDER="${HOME}/Dropbox/Kernel-Betas/N6"
 
 # Functions
@@ -41,7 +41,7 @@ function make_kernel {
 		make $DEFCONFIG
 		make $THREAD
 		cp -vr $ZIMAGE_DIR/$KERNEL $REPACK_DIR/kernel
-		mv ${HOME}/Android/Kernel/hC-N6-anykernel/kernel/zImage-dtb ${HOME}/Android/Kernel/hC-N6-anykernel/kernel/zImage
+		mv ${HOME}/KERNEL/hC-N6-anykernel/kernel/zImage-dtb ${HOME}/KERNEL/hC-N6-anykernel/kernel/zImage
 }
 
 function make_zip {
