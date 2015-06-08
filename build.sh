@@ -9,7 +9,7 @@ restore='\033[0m'
 clear
 
 # Resources
-THREAD="-j9"
+THREAD="-j4"
 KERNEL="zImage-dtb"
 DEFCONFIG="hells_defconfig"
 
@@ -27,7 +27,7 @@ export SUBARCH=arm
 KERNEL_DIR=`pwd`
 REPACK_DIR="${HOME}/Android/Kernel/hC-N6-anykernel-M"
 ZIP_MOVE="${HOME}/Android/Kernel/hC-releases/N6"
-ZIMAGE_DIR="${HOME}/Android/Kernel/hells-Core-N6/arch/arm/boot"
+ZIMAGE_DIR="${HOME}/hells-Core-N6/arch/arm/boot"
 DB_FOLDER="${HOME}/Dropbox/Kernel-Betas/N6"
 
 # Functions
@@ -40,8 +40,8 @@ function clean_all {
 function make_kernel {
 		make $DEFCONFIG
 		make $THREAD
-		cp -vr $ZIMAGE_DIR/$KERNEL $REPACK_DIR/kernel
-		mv ${HOME}/Android/Kernel/hC-N6-anykernel-M/kernel/zImage-dtb ${HOME}/Android/Kernel/hC-N6-anykernel-M/kernel/zImage
+		cp -vr $ZIMAGE_DIR/$KERNEL $REPACK_DIR/kernel/
+		mv ${REPACK_DIR}/kernel/zImage-dtb ${REPACK_DIR}/kernel/zImage
 }
 
 function make_zip {
