@@ -298,24 +298,20 @@ struct adreno_invalid_countables {
  * and are indexed by the enumeration values defined in this enum
  */
 enum adreno_regs {
-	ADRENO_REG_CP_DEBUG,
 	ADRENO_REG_CP_ME_RAM_WADDR,
 	ADRENO_REG_CP_ME_RAM_DATA,
 	ADRENO_REG_CP_PFP_UCODE_DATA,
 	ADRENO_REG_CP_PFP_UCODE_ADDR,
 	ADRENO_REG_CP_WFI_PEND_CTR,
 	ADRENO_REG_CP_RB_BASE,
-	ADRENO_REG_CP_RB_RPTR_ADDR,
 	ADRENO_REG_CP_RB_RPTR,
 	ADRENO_REG_CP_RB_WPTR,
-	ADRENO_REG_CP_PROTECT_CTRL,
 	ADRENO_REG_CP_ME_CNTL,
 	ADRENO_REG_CP_RB_CNTL,
 	ADRENO_REG_CP_IB1_BASE,
 	ADRENO_REG_CP_IB1_BUFSZ,
 	ADRENO_REG_CP_IB2_BASE,
 	ADRENO_REG_CP_IB2_BUFSZ,
-	ADRENO_REG_CP_TIMESTAMP,
 	ADRENO_REG_CP_ME_RAM_RADDR,
 	ADRENO_REG_CP_ROQ_ADDR,
 	ADRENO_REG_CP_ROQ_DATA,
@@ -326,8 +322,6 @@ enum adreno_regs {
 	ADRENO_REG_CP_MEQ_DATA,
 	ADRENO_REG_CP_HW_FAULT,
 	ADRENO_REG_CP_PROTECT_STATUS,
-	ADRENO_REG_SCRATCH_ADDR,
-	ADRENO_REG_SCRATCH_UMSK,
 	ADRENO_REG_SCRATCH_REG2,
 	ADRENO_REG_RBBM_STATUS,
 	ADRENO_REG_RBBM_PERFCTR_CTL,
@@ -347,17 +341,6 @@ enum adreno_regs {
 	ADRENO_REG_RBBM_AHB_PFP_SPLIT_STATUS,
 	ADRENO_REG_VPC_DEBUG_RAM_SEL,
 	ADRENO_REG_VPC_DEBUG_RAM_READ,
-	ADRENO_REG_VSC_PIPE_DATA_ADDRESS_0,
-	ADRENO_REG_VSC_PIPE_DATA_LENGTH_7,
-	ADRENO_REG_VSC_SIZE_ADDRESS,
-	ADRENO_REG_VFD_CONTROL_0,
-	ADRENO_REG_VFD_FETCH_INSTR_0_0,
-	ADRENO_REG_VFD_FETCH_INSTR_1_F,
-	ADRENO_REG_VFD_INDEX_MAX,
-	ADRENO_REG_SP_VS_PVT_MEM_ADDR_REG,
-	ADRENO_REG_SP_FS_PVT_MEM_ADDR_REG,
-	ADRENO_REG_SP_VS_OBJ_START_REG,
-	ADRENO_REG_SP_FS_OBJ_START_REG,
 	ADRENO_REG_PA_SC_AA_CONFIG,
 	ADRENO_REG_SQ_GPR_MANAGEMENT,
 	ADRENO_REG_SQ_INST_STORE_MANAGMENT,
@@ -754,16 +737,21 @@ static inline int adreno_context_timestamp(struct kgsl_context *k_ctxt,
 static inline int __adreno_add_idle_indirect_cmds(unsigned int *cmds,
 						unsigned int nop_gpuaddr)
 {
-	/* Adding an indirect buffer ensures that the prefetch stalls until
+	/*
+	 * Adding an indirect buffer ensures that the prefetch stalls until
 	 * the commands in indirect buffer have completed. We need to stall
 	 * prefetch with a nop indirect buffer when updating pagetables
-	 * because it provides stabler synchronization */
-	*cmds++ = CP_HDR_INDIRECT_BUFFER_PFD;
+	 * because it provides stabler synchronization. Adding a WME before
+	 * PFE mimics PFD and hence avoids races
+	 */
+	*cmds++ = cp_type3_packet(CP_WAIT_FOR_ME, 1);
+	*cmds++ = 0;
+	*cmds++ = CP_HDR_INDIRECT_BUFFER_PFE;
 	*cmds++ = nop_gpuaddr;
 	*cmds++ = 2;
 	*cmds++ = cp_type3_packet(CP_WAIT_FOR_IDLE, 1);
 	*cmds++ = 0x00000000;
-	return 5;
+	return 7;
 }
 
 static inline int adreno_add_bank_change_cmds(unsigned int *cmds,
