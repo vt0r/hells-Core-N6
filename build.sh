@@ -9,25 +9,25 @@ restore='\033[0m'
 clear
 
 # Resources
-THREAD="-j9"
+THREAD="-j4"
 KERNEL="zImage-dtb"
 DEFCONFIG="hells_defconfig"
 
 # Kernel Details
-BASE_HC_VER="hC"
+BASE_HC_VER="hCvatore"
 VER="-b10-t1-mako"
 HC_VER="$BASE_HC_VER$VER"
 
 # Vars
-export LOCALVERSION=-`echo $HC_VER`
+export LOCALVERSION="-${HC_VER}"
 export ARCH=arm
 export SUBARCH=arm
 
 # Paths
-KERNEL_DIR=`pwd`
+KERNEL_DIR=$(pwd)
 REPACK_DIR="${HOME}/Android/Kernel/hC-N6-anykernel"
 ZIP_MOVE="${HOME}/Android/Kernel/hC-releases/N6"
-ZIMAGE_DIR="${HOME}/Android/Kernel/hells-Core-N6/arch/arm/boot"
+ZIMAGE_DIR="${HOME}/hells-Core-N6/arch/arm/boot"
 DB_FOLDER="${HOME}/Dropbox/Kernel-Betas/N6"
 
 # Functions
@@ -41,19 +41,19 @@ function make_kernel {
 		make $DEFCONFIG
 		make $THREAD
 		cp -vr $ZIMAGE_DIR/$KERNEL $REPACK_DIR/kernel
-		mv ${HOME}/Android/Kernel/hC-N6-anykernel/kernel/zImage-dtb ${HOME}/Android/Kernel/hC-N6-anykernel/kernel/zImage
+		mv ${REPACK_DIR}/kernel/zImage-dtb ${REPACK_DIR}/kernel/zImage
 }
 
 function make_zip {
 		cd $REPACK_DIR
-		zip -9 -r `echo $HC_VER`.zip .
-		mv  `echo $HC_VER`.zip $ZIP_MOVE
+		zip -9 -r ${HC_VER}.zip .
+		mv  ${HC_VER}.zip $ZIP_MOVE
 		cd $KERNEL_DIR
 }
 
 function copy_dropbox {
 		cd $ZIP_MOVE
-		cp -vr  `echo $HC_VER`.zip $DB_FOLDER
+		cp -vr  ${HC_VER}.zip $DB_FOLDER
 		cd $KERNEL_DIR
 }
 
