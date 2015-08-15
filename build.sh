@@ -15,7 +15,7 @@ DEFCONFIG="hells_defconfig"
 
 # Kernel Details
 BASE_HC_VER="hC"
-VER="-b4-t3-M2"
+VER="-b4-t4-M2"
 HC_VER="$BASE_HC_VER$VER"
 
 # Vars
